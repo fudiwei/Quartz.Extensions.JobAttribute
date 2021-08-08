@@ -1,23 +1,37 @@
 # Quartz.Extensions.JobAttribute
 
+[![GitHub Stars](https://img.shields.io/github/stars/fudiwei/Quartz.Extensions.JobAttribute?logo=github)](https://github.com/fudiwei/Quartz.Extensions.JobAttribute)
+[![NuGet Version](https://img.shields.io/nuget/v/SKIT.Quartz.Extensions.JobAttribute.svg?sanitize=true)](https://www.nuget.org/packages/SKIT.Quartz.Extensions.JobAttribute)
+[![NuGet Download](https://img.shields.io/nuget/dt/SKIT.Quartz.Extensions.JobAttribute.svg?sanitize=true)](https://www.nuget.org/packages/SKIT.Quartz.Extensions.JobAttribute)
+[![License](https://img.shields.io/github/license/fudiwei/Quartz.Extensions.JobAttribute)](https://mit-license.org/)
+
 A convenient way to create Quartz.NET jobs using attributes.
 
 ---
 
 ## Features
 
-* Supports scheduling jobs using attributes instead of configuration files.
-* Supports dependency injection in *IJob* class (depends on the library [Quartz.DependencyInjection.Microsoft](https://github.com/nizmow/Quartz.DependencyInjection.Microsoft)).
-* Supports logger provider created by *ILoggerFactory*, instead of the default.
-* Follows the lifecycle of ASP.NET Core.
+-   Supports scheduling jobs using _`QuartzJobAttribute`_ instead of configuration files.
+-   Supports dependency injection in _`IJob`_ class (depends on the library [Quartz.Extensions.DependencyInjection](https://github.com/fglaeser/Quartz.Extensions.DependencyInjection)).
+-   Follows the lifecycle of ASP .NET Core.
 
 ---
 
 ## Usage
 
+Install it:
+
+```shell
+# Install by Package Manager
+> Install-Package SKIT.Quartz.Extensions.JobAttribute
+
+# Install by .NET CLI
+> dotnet add package SKIT.Quartz.Extensions.JobAttribute
+```
+
 Here is an example:
 
-``` CSharp
+```csharp
 using Quartz;
 
 [QuartzJob(Name = "Clocking", Description = "Tell the time every seconds.", CronExpression = "* * * * * ? ")]
@@ -38,11 +52,11 @@ public class ClockingJob : IJob
 }
 ```
 
-Also, there are options for *Name*, *Group*, *Description* *CronExpression*, *Priority*, *StoreDurably* and *RequestRecovery*.
+Also, there are options for _Name_, _Group_, _Description_ _CronExpression_, _Priority_, _StoreDurably_ and _RequestRecovery_.
 
-Register service in *ConfigureServices* method in `Startup.cs` file.
+Register service in _ConfigureServices_ method in `Startup.cs` file.
 
-``` CSharp
+```csharp
 using Microsoft.Extensions.DependencyInjection;
 using Quartz;
 
@@ -52,9 +66,9 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 
-Then Start Quartz scheduler in *Configure* method in `Startup.cs` file:
+Then Start Quartz scheduler in _Configure_ method in `Startup.cs` file:
 
-``` CSharp
+```csharp
 using Microsoft.AspNetCore.Builder;
 using Quartz;
 
