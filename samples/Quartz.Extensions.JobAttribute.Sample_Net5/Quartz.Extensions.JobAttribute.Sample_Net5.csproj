@@ -5,9 +5,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Quartz.Extensions.JobAttribute\Quartz.Extensions.JobAttribute.csproj" />
+      <PackageReference Include="Quartz.AspNetCore" Version="3.3.3" />
     </ItemGroup>
 
-    <ProjectExtensions><VisualStudio><UserProperties properties_4launchsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\Quartz.Extensions.JobAttribute\Quartz.Extensions.JobAttribute.csproj" />
+    </ItemGroup>
 
 </Project>

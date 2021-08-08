@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Quartz
 {
@@ -42,32 +43,38 @@ namespace Quartz
         /// <returns></returns>
         public static IServiceCollection AddQuartzJobs(this IServiceCollection services, NameValueCollection properties, Action<IServiceCollectionQuartzConfigurator> configure)
         {
-            QuartzJobTypeContainer container = new QuartzJobTypeContainer();
-            services.AddSingleton(container);
+            IList<Type> listJobType = ReflectionHelper.GetAssembliesTypes()
+                .Where(t => ReflectionHelper.IsQuartzJobClass(t) && Attribute.IsDefined(t, ReflectionHelper.TypeOfQuartzJobAttribute))
+                .ToList();
 
-            foreach (Type type in ReflectionHelper.GetAssembliesTypes())
+            return services.AddQuartz(properties, (quartz) =>
             {
-                if (ReflectionHelper.IsQuartzJobClass(type) && Attribute.IsDefined(type, ReflectionHelper.TypeOfQuartzJobAttribute))
+                quartz.UseMicrosoftDependencyInjectionJobFactory();
+
+                foreach (Type jobType in listJobType)
                 {
-                    services.TryAddTransient(type);
-                    container.Add(type);
+                    QuartzJobAttribute jobAttr = jobType.GetCustomAttributes(typeof(QuartzJobAttribute), true).First() as QuartzJobAttribute;
+                    string jobName = string.IsNullOrEmpty(jobAttr.Name) ? jobType.Name : jobAttr.Name;
+
+                    quartz
+                        .AddJob(jobType, configure: (config) =>
+                        {
+                            config.WithIdentity(jobName, jobAttr.Group);
+                            config.WithDescription(jobAttr.Description);
+                            config.StoreDurably(jobAttr.StoreDurably);
+                            config.RequestRecovery(jobAttr.RequestRecovery);
+                        })
+                        .AddTrigger(config =>
+                        {
+                            config.ForJob(jobName);
+                            config.WithIdentity(jobName + "Trigger", jobAttr.Group);
+                            config.WithPriority(jobAttr.Priority);
+                            config.WithCronSchedule(jobAttr.CronExpression, builder => builder.InTimeZone(TimeZoneInfo.Local));
+                            config.StartNow();
+                        });
                 }
-            }
 
-            return services.AddQuartz(properties, (q) =>
-            {
-                q.UseInMemoryStore();
-
-                q.UseMicrosoftDependencyInjectionJobFactory(options =>
-                {
-                    options.AllowDefaultConstructor = true;
-                });
-
-                q.UseSimpleTypeLoader();
-
-                q.UseTimeZoneConverter();
-
-                configure?.Invoke(q);
+                configure?.Invoke(quartz);
             });
         }
     }

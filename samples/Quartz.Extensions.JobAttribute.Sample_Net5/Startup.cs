@@ -17,6 +17,11 @@ namespace Quartz.Extensions.JobAttribute.Sample_Net5
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddQuartzJobs();
+
+            services.AddQuartzServer(options =>
+            {
+                options.WaitForJobsToComplete = true;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -26,8 +31,6 @@ namespace Quartz.Extensions.JobAttribute.Sample_Net5
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            app.UseQuartzJobs();
 
             app.UseRouting();
 
