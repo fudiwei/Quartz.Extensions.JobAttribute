@@ -11,7 +11,7 @@ A convenient way to create Quartz.NET jobs using attributes.
 
 ## Features
 
--   Supports scheduling jobs using _`QuartzJobAttribute`_ instead of configuration files.
+-   Supports scheduling jobs using _`QuartzJobAttribute`_ instead of configuration files or programming.
 -   Supports dependency injection in _`IJob`_ class (depends on the library [Quartz.Extensions.DependencyInjection](https://github.com/fglaeser/Quartz.Extensions.DependencyInjection)).
 -   Follows the lifecycle of ASP .NET Core.
 
@@ -23,9 +23,11 @@ Install it:
 
 ```shell
 # Install by Package Manager
+> Install-Package Quartz.AspNetCore
 > Install-Package SKIT.Quartz.Extensions.JobAttribute
 
 # Install by .NET CLI
+> dotnet add package Quartz.AspNetCore
 > dotnet add package SKIT.Quartz.Extensions.JobAttribute
 ```
 
@@ -44,36 +46,28 @@ public class ClockingJob : IJob
         _logger = loggerFactory.CreateLogger(GetType());
     }
 
-    async Task IJob.Execute(IJobExecutionContext context)
+    Task IJob.Execute(IJobExecutionContext context)
     {
         _logger.LogInformation("Now is " + context.FireTimeUtc);
-        await Task.CompletedTask;
+        return Task.CompletedTask;
     }
 }
 ```
 
 Also, there are options for _Name_, _Group_, _Description_ _CronExpression_, _Priority_, _StoreDurably_ and _RequestRecovery_.
 
-Register service in _ConfigureServices_ method in `Startup.cs` file.
+Then register service in _ConfigureServices_ method in `Startup.cs` file.
 
 ```csharp
-using Microsoft.Extensions.DependencyInjection;
 using Quartz;
 
 public void ConfigureServices(IServiceCollection services)
 {
     services.AddQuartzJobs();
-}
-```
 
-Then Start Quartz scheduler in _Configure_ method in `Startup.cs` file:
-
-```csharp
-using Microsoft.AspNetCore.Builder;
-using Quartz;
-
-public void Configure(IApplicationBuilder app)
-{
-    app.UseQuartzJobs();
+    services.AddQuartzServer(options =>
+    {
+        options.WaitForJobsToComplete = true;
+    });
 }
 ```
