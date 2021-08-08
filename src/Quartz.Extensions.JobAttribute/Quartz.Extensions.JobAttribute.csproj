@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <PackageId>Quartz.Extensions.JobAttribute</PackageId>
+        <PackageId>SKIT.Quartz.Extensions.JobAttribute</PackageId>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageProjectUrl>https://github.com/fudiwei/Quartz.Extensions.JobAttribute</PackageProjectUrl>
         <PackageTags>scheduling tasks jobs triggers scheduler threading</PackageTags>
