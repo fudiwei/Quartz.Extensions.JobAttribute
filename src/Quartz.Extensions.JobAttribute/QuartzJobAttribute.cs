@@ -29,6 +29,11 @@ namespace Quartz
         public string CronExpression { get; set; }
 
         /// <summary>
+        /// The time zone id which should be used with the CronExpression. (default: null, which means <see cref="TimeZoneInfo.Local"/>)
+        /// </summary>
+        public string CronTimeZone { get; set; }
+
+        /// <summary>
         /// The Trigger's priority. When more than one Trigger have the same fire time, the scheduler will fire the one with the highest priority first.
         /// </summary>
         public int Priority { get; set; } = 1;

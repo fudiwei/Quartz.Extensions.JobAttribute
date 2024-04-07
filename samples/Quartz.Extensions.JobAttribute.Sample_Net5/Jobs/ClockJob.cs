@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Quartz.Extensions.JobAttribute.Sample_Net5
 {
-    [QuartzJob("* * * * * ? ", Description = "Tell the time every seconds.")]
+    [QuartzJob("* * * * * ? ", Description = "Tell the time every seconds.", CronTimeZone = "UTC")]
     [DisallowConcurrentExecution]
     public class ClockJob : IJob
     {

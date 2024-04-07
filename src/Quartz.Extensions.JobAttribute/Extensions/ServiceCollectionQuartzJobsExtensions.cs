@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
+using TimeZoneConverter;
 
 namespace Quartz
 {
@@ -49,6 +50,8 @@ namespace Quartz
 
             return services.AddQuartz(properties, (quartz) =>
             {
+                quartz.UseTimeZoneConverter();
+
                 foreach (Type jobType in listJobType)
                 {
                     QuartzJobAttribute jobAttr = jobType.GetCustomAttributes(typeof(QuartzJobAttribute), true).First() as QuartzJobAttribute;
@@ -67,7 +70,7 @@ namespace Quartz
                             config.ForJob(jobName);
                             config.WithIdentity(jobName + "Trigger", jobAttr.Group);
                             config.WithPriority(jobAttr.Priority);
-                            config.WithCronSchedule(jobAttr.CronExpression, builder => builder.InTimeZone(TimeZoneInfo.Local));
+                            config.WithCronSchedule(jobAttr.CronExpression, builder => builder.InTimeZone(string.IsNullOrEmpty(jobAttr.CronTimeZone) ? TimeZoneInfo.Local : TZConvert.GetTimeZoneInfo(jobAttr.CronTimeZone)));
                             config.StartNow();
                         });
                 }
