@@ -56,9 +56,10 @@ namespace Quartz
                 {
                     QuartzJobAttribute jobAttr = jobType.GetCustomAttributes(typeof(QuartzJobAttribute), true).First() as QuartzJobAttribute;
                     string jobName = string.IsNullOrEmpty(jobAttr.Name) ? jobType.Name : jobAttr.Name;
+                    JobKey jobKey = JobKey.Create(jobName, jobAttr.Group);
 
                     quartz
-                        .AddJob(jobType, configure: (config) =>
+                        .AddJob(jobType, jobKey, (config) =>
                         {
                             config.WithIdentity(jobName, jobAttr.Group);
                             config.WithDescription(jobAttr.Description);

@@ -20,9 +20,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Quartz" Version="3.8.1" />
-        <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="3.8.1" />
-        <PackageReference Include="Quartz.Plugins.TimeZoneConverter" Version="3.8.1" />
+        <PackageReference Include="Quartz" Version="3.22.0" />
+        <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="3.22.0" />
+        <PackageReference Include="Quartz.Plugins.TimeZoneConverter" Version="3.22.0" />
     </ItemGroup>
 
 </Project>
